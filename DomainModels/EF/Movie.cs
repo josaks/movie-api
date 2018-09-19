@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ViewModel;
 
-namespace DomainModels {
+namespace DomainModels.EF {
     public class Movie
     {
 		public int Id { get; set; }
@@ -18,7 +18,7 @@ namespace DomainModels {
 
 		public string Poster { get; set; }
 
-		public int ContentRating { get; set; }
+		public string ContentRating { get; set; }
 
 		public string Duration { get; set; }
 
@@ -32,8 +32,21 @@ namespace DomainModels {
 
 		public List<ActorMovie> Actors{ get; set; } = new List<ActorMovie>();
 
-		public int ImdbRating { get; set; }
+		public double ImdbRating { get; set; }
 
 		public string PosterURL { get; set; }
 	}
+
+    public class Genre
+    {
+        public int Id { get; set; }
+        public GenreEnum GenreValue { get; set; }
+
+        public enum GenreEnum
+        {
+            Action,
+            Adventure,
+            Scifi
+        }
+    }
 }

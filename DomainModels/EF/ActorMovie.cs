@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainModels {
-    public class RatingMovie
+namespace DomainModels.EF {
+    public class ActorMovie
     {
-		public int RatingId { get; set; }
-		public Rating Rating { get; set; }
+		public int ActorId { get; set; }
+		public Actor Actor { get; set; }
 
 		public int MovieId { get; set; }
 		public Movie Movie { get; set; }

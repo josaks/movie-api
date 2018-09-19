@@ -7,18 +7,18 @@ using ViewModel;
 namespace Service
 {
 	public class MovieService : IMovieService {
-		private readonly IMovieRepository dal;
+		private readonly IMovieRepository MovieRepo;
 
-		public MovieService(IMovieRepository movieDal) {
-			dal = movieDal;
+		public MovieService(IMovieRepository movieRepo) {
+            MovieRepo = movieRepo;
 		}
 
 		public List<Movie> GetAllMovies() {
-			return dal.GetAllMovies();
+			return MovieRepo.GetAllMovies();
 		}
 
 		public Movie GetMovie(int id) {
-			return dal.GetMovie(id);
+			return MovieRepo.GetMovie(id);
 		}
 	}
 }

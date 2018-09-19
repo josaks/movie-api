@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DomainModels;
+using DomainModels.EF;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +22,7 @@ namespace MovieApi
 				var services = scope.ServiceProvider;
 				var context = services.GetRequiredService<MovieContext>();
 				try {
-					SeedData.Initialize(services);
+					//SeedData.Initialize(services);
 				}
 				catch(Exception e) {
 					var logger = services.GetRequiredService<ILogger<Program>>();

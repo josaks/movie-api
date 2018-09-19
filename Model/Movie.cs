@@ -11,13 +11,13 @@ namespace ViewModel
 
 		public int Year { get; set; }
 
-		public IEnumerable<Genre> Genres { get; set; }
+		public IEnumerable<string> Genres { get; set; }
 
 		public IEnumerable<int> Ratings { get; set; }
 
 		public string Poster { get; set; }
 
-		public int ContentRating { get; set; }
+		public string ContentRating { get; set; }
 
 		public string Duration { get; set; }
 
@@ -31,20 +31,8 @@ namespace ViewModel
 
 		public IEnumerable<string> Actors { get; set; }
 
-		public int ImdbRating { get; set; }
+		public double ImdbRating { get; set; }
 
 		public string PosterURL { get; set; }
 	}
-
-	public class Genre {
-		public int Id { get; set; }
-		public GenreEnum GenreValue { get; set; }
-
-		public enum GenreEnum {
-			Action,
-			Adventure,
-			Scifi
-		}
-	}
-	
 }

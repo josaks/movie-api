@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainModels
+namespace DomainModels.EF
 {
     public class Actor
     {

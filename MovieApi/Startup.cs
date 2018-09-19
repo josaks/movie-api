@@ -13,7 +13,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using Repositories;
-using DomainModels;
+using DomainModels.EF;
+using MongoDB.Driver;
 
 namespace MovieApi
 {
@@ -30,11 +31,18 @@ namespace MovieApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-			
-			services.AddTransient<IMovieService, MovieService>();
-			services.AddTransient<IMovieRepository, MovieRepository>();
 
-			services.AddEntityFrameworkSqlServer();
+            //Register service
+            services.AddTransient<IMovieService, MovieService>();
+
+            //SQL/EF repo
+            //services.AddTransient<IMovieRepository, MovieRepositoryEF>();
+
+            //MongoDB repo
+            services.AddTransient<IMovieRepository, MovieRepositoryMongoDB>();
+            
+
+            services.AddEntityFrameworkSqlServer();
 			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
 				services.AddDbContext<MovieContext>(options =>
 					options.UseSqlServer(Configuration.GetConnectionString("prodDB")));
