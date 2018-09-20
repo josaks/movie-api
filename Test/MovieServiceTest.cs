@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MovieApi.Controllers;
+using Persistence;
 using Repositories;
 using Service;
 using System;
@@ -12,26 +13,25 @@ namespace Test {
 	[TestClass]
 	public class MovieServiceTest {
 		private IMovieService service;
-		private Mock<IMovieRepository> mockRepo;
+		private Mock<ICache> mockCache;
 
 		[TestInitialize]
 		public void BeforeEach() {
 			//Initialize a mock repository that can be passed to the service constructor
-			mockRepo = new Mock<IMovieRepository>();
+			mockCache = new Mock<ICache>();
 		}
 
 		[TestMethod]
 		public void GetAllMovies_ReturnsAListOfMovies() {
 			//Arrange
 			var testMovies = GetTestMovies();
-			mockRepo.Setup(repo => repo.GetAllMovies()).Returns(testMovies);
-			service = new MovieService(mockRepo.Object);
+			mockCache.Setup(cache => cache.GetAllMovies()).Returns(testMovies);
+			service = new MovieService(mockCache.Object);
 
 			//Act
 			var result = service.GetAllMovies();
 
 			//Assert
-			Assert.IsInstanceOfType(result, typeof(List<Movie>));
 			Assert.AreEqual(testMovies, result);
 		}
 
@@ -39,14 +39,13 @@ namespace Test {
 		public void GivenAnId_GetMovie_ReturnsAMovieWithCorrectId() {
 			//Arrange
 			int id = 1;
-			mockRepo.Setup(repo => repo.GetMovie(id)).Returns(GetTestMovie(id));
-			service = new MovieService(mockRepo.Object);
+			mockCache.Setup(cache => cache.GetMovie(id)).Returns(GetTestMovie(id));
+			service = new MovieService(mockCache.Object);
 
 			//Act
 			var result = service.GetMovie(id);
 
 			//Assert
-			Assert.IsInstanceOfType(result, typeof(Movie));
 			Assert.AreEqual(result.Title, "Test movie");
 			Assert.AreEqual(result.Title, id);
 		}

@@ -15,6 +15,7 @@ using Service;
 using Repositories;
 using DomainModels.EF;
 using MongoDB.Driver;
+using Persistence;
 
 namespace MovieApi
 {
@@ -31,28 +32,44 @@ namespace MovieApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMemoryCache();
 
-            //Register service
-            services.AddTransient<IMovieService, MovieService>();
+            //Services
+            services.AddScoped<IMovieService, MovieService>();
 
+            //Cache
+            services.AddScoped<ICache, Cache>();
+
+            //Repositories
             //SQL/EF repo
             //services.AddTransient<IMovieRepository, MovieRepositoryEF>();
-
             //MongoDB repo
-            services.AddTransient<IMovieRepository, MovieRepositoryMongoDB>();
+            services.AddScoped<IMovieRepository, MovieRepositoryMongoDB>();
             
 
             services.AddEntityFrameworkSqlServer();
-			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
-				services.AddDbContext<MovieContext>(options =>
-					options.UseSqlServer(Configuration.GetConnectionString("prodDB")));
-			else
-				services.AddDbContext<MovieContext>(options => options.UseSqlServer(
-					Configuration.GetConnectionString("devDB")));
-			
-			services.BuildServiceProvider().GetService<MovieContext>().Database.Migrate();
 
-			Console.WriteLine("services configured");
+            //Figure out if development or production environment and register connection information accordingly
+
+            var sqlConnectionString = "";
+            var mongoDBConnectionString = "";
+
+			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                sqlConnectionString = Configuration.GetConnectionString("prodSQLDB");
+                mongoDBConnectionString = Configuration.GetConnectionString("prodMongoDB");
+            }
+			else{
+                sqlConnectionString = Configuration.GetConnectionString("devSQLDB");
+                mongoDBConnectionString = Configuration.GetConnectionString("devMongoDB");
+            }
+
+            services.AddDbContext<MovieContext>(options => options.UseSqlServer(sqlConnectionString));
+            services.AddScoped<IMongoDatabase>(client => new MongoClient(
+                MongoClientSettings.FromConnectionString(mongoDBConnectionString))
+                .GetDatabase("MoviesDB"));
+
+			services.BuildServiceProvider().GetService<MovieContext>().Database.Migrate();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

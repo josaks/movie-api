@@ -1,4 +1,4 @@
-﻿using Repositories;
+﻿using Persistence;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,18 +7,18 @@ using ViewModel;
 namespace Service
 {
 	public class MovieService : IMovieService {
-		private readonly IMovieRepository MovieRepo;
+		private readonly ICache cache;
 
-		public MovieService(IMovieRepository movieRepo) {
-            MovieRepo = movieRepo;
+		public MovieService(ICache cache) {
+            this.cache = cache;
 		}
 
 		public List<Movie> GetAllMovies() {
-			return MovieRepo.GetAllMovies();
+			return cache.GetAllMovies();
 		}
 
 		public Movie GetMovie(int id) {
-			return MovieRepo.GetMovie(id);
+			return cache.GetMovie(id);
 		}
 	}
 }

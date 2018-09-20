@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DomainModels\DomainModels.csproj" />
     <ProjectReference Include="..\Model\ViewModel.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 

@@ -32,7 +32,6 @@ namespace Test
 			var result = controller.Movies();
 
 			//Assert
-			Assert.IsInstanceOfType(result, typeof(ActionResult<List<Movie>>));
 			var model = result.Value;
 			Assert.IsTrue(model.Count == 2);
 		}
@@ -48,7 +47,6 @@ namespace Test
 			var result = controller.Movie(id);
 
 			//Assert
-			Assert.IsInstanceOfType(result, typeof(ActionResult<Movie>));
 			var model = result.Value;
 			Assert.AreEqual(model.Title, "Test movie");
 			Assert.AreEqual(model.Id, id);

@@ -6,20 +6,15 @@ using System.Text;
 using System.Linq;
 using View = ViewModel;
 using Domain = DomainModels.MongoDB;
+using System.Security.Authentication;
 
 namespace Repositories
 {
     public class MovieRepositoryMongoDB : IMovieRepository
     {
+
         private readonly IMongoDatabase db;
-
-        public MovieRepositoryMongoDB()
-        {
-            var client = new MongoClient("mongodb://localhost:27017");
-            db = client.GetDatabase("MoviesDB");
-        }
-
-        // Constructor with dependency injection for testing
+        
         public MovieRepositoryMongoDB(IMongoDatabase db)
         {
             this.db = db;
