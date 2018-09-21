@@ -64,5 +64,10 @@ namespace Repositories
 
             return viewMovie;
         }
+
+        public View.Movie AddComment(View.Comment comment)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

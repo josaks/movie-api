@@ -6,12 +6,12 @@ using ViewModel;
 
 namespace Persistence
 {
-    public class Cache : ICache
+    public class MovieCache : ICache
     {
         private readonly IMemoryCache cache;
         private readonly IMovieRepository repo;
 
-        public Cache(IMemoryCache cache, IMovieRepository repo)
+        public MovieCache(IMemoryCache cache, IMovieRepository repo)
         {
             this.cache = cache;
             this.repo = repo;
@@ -24,22 +24,24 @@ namespace Persistence
 
         public Movie GetMovie(int id)
         {
-            return CheckCacheThenDB("_Movie", () => repo.GetMovie(id));
+            return CheckCacheThenDB($"_Movie{id}", () => repo.GetMovie(id));
         }
 
+        public Movie AddComment(Comment comment)
+        {
+            return repo.AddComment(comment);
+        }
 
         //Check if database record exists in cache, if so return it.
         //If not, make a call to the database to retrieve it and store it in cache
-        private T CheckCacheThenDB<T>(string cacheKey, Func<T> dbCall)
+        public T CheckCacheThenDB<T>(string cacheKey, Func<T> dbCall)
         {
-            T cacheEntry;
+            T cacheEntry = cache.Get<T>(cacheKey);
 
-            if (!cache.TryGetValue(cacheKey, out cacheEntry))
-            {
-                cacheEntry = dbCall();
-                cache.Set(cacheKey, cacheEntry);
-            }
-            
+            if (cacheEntry != null) return cacheEntry;
+
+            cacheEntry = dbCall();
+            cache.Set(cacheKey, cacheEntry, TimeSpan.FromSeconds(10));
             return cacheEntry;
         }
     }

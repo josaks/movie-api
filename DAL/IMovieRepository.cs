@@ -9,5 +9,6 @@ namespace Repositories
     {
 		List<Movie> GetAllMovies();
 		Movie GetMovie(int id);
+        Movie AddComment(Comment comment);
 	}
 }

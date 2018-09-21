@@ -5,6 +5,7 @@ using MovieApi.Controllers;
 using Service;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ViewModel;
 
 namespace Test
@@ -22,25 +23,28 @@ namespace Test
 		}
 
 		[TestMethod]
-        public void Movies_ReturnsAnActionResult_WithAListOfMovies()
+        public void Movies_ReturnsAListOfMovies()
         {
 			//Arrange
-			mockService.Setup(service => service.GetAllMovies()).Returns(GetTestMovies());
+			mockService.Setup(service => service.GetAllMovies()).Returns(Helpers.GetTestMovies());
 			controller = new MovieController(mockService.Object);
 
-			//Act
-			var result = controller.Movies();
+            var expected = Helpers.GetTestMovies();
+
+            //Act
+            var result = controller.Movies();
 
 			//Assert
 			var model = result.Value;
-			Assert.IsTrue(model.Count == 2);
+            model.SequenceEqual(expected);
 		}
 
 		[TestMethod]
-		public void GivenAnId_Movie_ReturnsAnActionResult_WithAMovie() {
+		public void GivenAnId_Movie_ReturnsAMovieWithCorrectId() {
 			//Arrange
 			int id = 1;
-			mockService.Setup(service => service.GetMovie(id)).Returns(GetTestMovie(id));
+            string title = "Test movie";
+			mockService.Setup(service => service.GetMovie(id)).Returns(Helpers.GetTestMovie(id, title));
 			controller = new MovieController(mockService.Object);
 
 			//Act
@@ -48,32 +52,8 @@ namespace Test
 
 			//Assert
 			var model = result.Value;
-			Assert.AreEqual(model.Title, "Test movie");
+			Assert.AreEqual(model.Title, title);
 			Assert.AreEqual(model.Id, id);
-		}
-
-
-
-		//Helper methods
-
-		private Movie GetTestMovie(int id) {
-			return new Movie() {
-				Id = id,
-				Title = "Test movie",
-			};
-		}
-
-		private List<Movie> GetTestMovies() {
-			var movies = new List<Movie>();
-			movies.Add(new Movie() {
-				Title = "Test movie 1",
-				Id = 1,
-			});
-			movies.Add(new Movie() {
-				Title = "Test movie 1",
-				Id = 1,
-			});
-			return movies;
 		}
 	}
 }

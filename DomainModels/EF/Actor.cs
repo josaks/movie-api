@@ -9,6 +9,6 @@ namespace DomainModels.EF
 		public int Id { get; set; }
 		public string Name { get; set; }
 
-		public List<ActorMovie> ActorMovies { get; set; } = new List<ActorMovie>();
+		public virtual List<ActorMovie> ActorMovies { get; set; } = new List<ActorMovie>();
 	}
 }

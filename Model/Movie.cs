@@ -34,5 +34,7 @@ namespace ViewModel
 		public double ImdbRating { get; set; }
 
 		public string PosterURL { get; set; }
+
+        public IEnumerable<string> Comments { get; set; }
 	}
 }

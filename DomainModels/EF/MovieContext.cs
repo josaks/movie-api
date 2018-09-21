@@ -12,6 +12,7 @@ namespace DomainModels.EF {
 		public DbSet<Actor> Actors { get; set; }
 		public DbSet<ActorMovie> ActorMovies { get; set; }
 		public DbSet<RatingMovie> RatingMovies { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder m) {
 			m.Entity<ActorMovie>().HasKey(t => new { t.ActorId, t.MovieId });

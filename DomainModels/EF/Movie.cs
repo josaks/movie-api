@@ -12,9 +12,9 @@ namespace DomainModels.EF {
 
 		public int Year { get; set; }
 
-		public List<Genre> Genres { get; set; }
+		public virtual List<Genre> Genres { get; set; }
 
-		public List<RatingMovie> Ratings { get; set; } = new List<RatingMovie>();
+		public virtual List<RatingMovie> Ratings { get; set; } = new List<RatingMovie>();
 
 		public string Poster { get; set; }
 
@@ -30,11 +30,13 @@ namespace DomainModels.EF {
 
 		public string Storyline { get; set; }
 
-		public List<ActorMovie> Actors{ get; set; } = new List<ActorMovie>();
+		public virtual List<ActorMovie> Actors{ get; set; } = new List<ActorMovie>();
 
 		public double ImdbRating { get; set; }
 
 		public string PosterURL { get; set; }
+
+        public virtual List<Comment> Comments { get; set; }
 	}
 
     public class Genre
@@ -44,7 +46,7 @@ namespace DomainModels.EF {
 
         public enum GenreEnum
         {
-            Action,
+            Action = 1,
             Adventure,
             Scifi
         }

@@ -20,5 +20,10 @@ namespace Service
 		public Movie GetMovie(int id) {
 			return cache.GetMovie(id);
 		}
+
+        public Movie AddComment(Comment comment)
+        {
+            return cache.AddComment(comment);
+        }
 	}
 }

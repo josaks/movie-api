@@ -20,7 +20,7 @@ namespace MovieApi.Controllers
 			MovieService = movieService;
 		}
 
-        // GET api/movie
+        // GET api/movies
         [HttpGet]
 		[Route("Movies")]
         public ActionResult<List<Movie>> Movies()
@@ -30,10 +30,22 @@ namespace MovieApi.Controllers
 
         // GET api/movie/1
         [HttpGet]
-		[Route("Movies/{id}")]
+		[Route("Movie/{id}")]
 		public ActionResult<Movie> Movie(int id)
         {
-			return MovieService.GetMovie(id);
+            var movie = MovieService.GetMovie(id);
+            if (movie != null) return movie;
+            else return NotFound();
+        }
+
+        // POST api/addcomment
+        [HttpPost]
+        [Route("AddComment")]
+        public ActionResult<Movie> AddComment([FromBody] Comment comment)
+        {
+            var movie = MovieService.AddComment(comment);
+            if (movie != null) return movie;
+            else return NotFound();
         }
     }
 }

@@ -16,6 +16,7 @@ using Repositories;
 using DomainModels.EF;
 using MongoDB.Driver;
 using Persistence;
+using Microsoft.AspNetCore.Http;
 
 namespace MovieApi
 {
@@ -31,6 +32,13 @@ namespace MovieApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddResponseCaching();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMemoryCache();
 
@@ -38,14 +46,11 @@ namespace MovieApi
             services.AddScoped<IMovieService, MovieService>();
 
             //Cache
-            services.AddScoped<ICache, Cache>();
+            services.AddScoped<ICache, MovieCache>();
 
             //Repositories
-            //SQL/EF repo
-            //services.AddTransient<IMovieRepository, MovieRepositoryEF>();
-            //MongoDB repo
-            services.AddScoped<IMovieRepository, MovieRepositoryMongoDB>();
-            
+            services.AddScoped<IMovieRepository, MovieRepositoryEF>();
+
 
             services.AddEntityFrameworkSqlServer();
 
@@ -54,17 +59,19 @@ namespace MovieApi
             var sqlConnectionString = "";
             var mongoDBConnectionString = "";
 
-			if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 sqlConnectionString = Configuration.GetConnectionString("prodSQLDB");
                 mongoDBConnectionString = Configuration.GetConnectionString("prodMongoDB");
             }
-			else{
+            else {
                 sqlConnectionString = Configuration.GetConnectionString("devSQLDB");
                 mongoDBConnectionString = Configuration.GetConnectionString("devMongoDB");
             }
 
-            services.AddDbContext<MovieContext>(options => options.UseSqlServer(sqlConnectionString));
+            services.AddDbContext<MovieContext>(options => {
+                options.UseSqlServer(sqlConnectionString);
+            });
             services.AddScoped<IMongoDatabase>(client => new MongoClient(
                 MongoClientSettings.FromConnectionString(mongoDBConnectionString))
                 .GetDatabase("MoviesDB"));
@@ -83,6 +90,20 @@ namespace MovieApi
             {
                 app.UseHsts();
             }
+            app.UseResponseCaching();
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(10)
+                    };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+                    new string[] { "Accept-Encoding" };
+
+                await next();
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();

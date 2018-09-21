@@ -7,7 +7,9 @@ using Repositories;
 using Service;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ViewModel;
+
 
 namespace Test {
 	[TestClass]
@@ -23,54 +25,35 @@ namespace Test {
 
 		[TestMethod]
 		public void GetAllMovies_ReturnsAListOfMovies() {
-			//Arrange
-			var testMovies = GetTestMovies();
-			mockCache.Setup(cache => cache.GetAllMovies()).Returns(testMovies);
+            //Arrange
+			mockCache.Setup(cache => cache.GetAllMovies()).Returns(Helpers.GetTestMovies());
 			service = new MovieService(mockCache.Object);
 
-			//Act
-			var result = service.GetAllMovies();
+            var expected = Helpers.GetTestMovies();
 
-			//Assert
-			Assert.AreEqual(testMovies, result);
+            //Act
+            var result = service.GetAllMovies();
+
+            //Assert
+            
+            Assert.AreEqual(result.Count, expected.Count);
+            result.SequenceEqual(expected);
 		}
 
 		[TestMethod]
 		public void GivenAnId_GetMovie_ReturnsAMovieWithCorrectId() {
 			//Arrange
 			int id = 1;
-			mockCache.Setup(cache => cache.GetMovie(id)).Returns(GetTestMovie(id));
+            string title = "Test movie";
+			mockCache.Setup(cache => cache.GetMovie(id)).Returns(Helpers.GetTestMovie(id, title));
 			service = new MovieService(mockCache.Object);
 
 			//Act
 			var result = service.GetMovie(id);
 
 			//Assert
-			Assert.AreEqual(result.Title, "Test movie");
-			Assert.AreEqual(result.Title, id);
-		}
-
-
-		//Helper methods
-
-		private Movie GetTestMovie(int id) {
-			return new Movie() {
-				Id = id,
-				Title = "Test movie",
-			};
-		}
-
-		private List<Movie> GetTestMovies() {
-			var movies = new List<Movie>();
-			movies.Add(new Movie() {
-				Title = "Test movie 1",
-				Id = 1,
-			});
-			movies.Add(new Movie() {
-				Title = "Test movie 1",
-				Id = 1,
-			});
-			return movies;
+			Assert.AreEqual(result.Title, title);
+			Assert.AreEqual(result.Id, id);
 		}
 	}
 }

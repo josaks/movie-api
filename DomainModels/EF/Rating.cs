@@ -8,6 +8,6 @@ namespace DomainModels.EF {
 		public int Id { get; set; }
 		public int RatingValue { get; set; }
 
-		public List<RatingMovie> Movie { get; set; } = new List<RatingMovie>();
+		public virtual List<RatingMovie> Movie { get; set; } = new List<RatingMovie>();
 	}
 }
