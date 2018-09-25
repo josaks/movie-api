@@ -35,6 +35,8 @@ namespace ViewModel
 
 		public string PosterURL { get; set; }
 
-        public IEnumerable<string> Comments { get; set; }
-	}
+        public IEnumerable<Comment> Comments { get; set; }
+
+        public bool IsFavorite { get; set; }
+    }
 }

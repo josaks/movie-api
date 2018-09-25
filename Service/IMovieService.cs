@@ -8,6 +8,8 @@ namespace Service
     {
 		List<Movie> GetAllMovies();
 		Movie GetMovie(int id);
-        Movie AddComment(Comment comment);
+        void AddComment(Comment comment);
+        void Rate(Rating rating);
+        void SetFavorite(bool isFavorite, int movieId);
     }
 }

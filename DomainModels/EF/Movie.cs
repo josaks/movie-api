@@ -14,7 +14,7 @@ namespace DomainModels.EF {
 
 		public virtual List<Genre> Genres { get; set; }
 
-		public virtual List<RatingMovie> Ratings { get; set; } = new List<RatingMovie>();
+		public virtual List<Rating> Ratings { get; set; }
 
 		public string Poster { get; set; }
 
@@ -30,14 +30,16 @@ namespace DomainModels.EF {
 
 		public string Storyline { get; set; }
 
-		public virtual List<ActorMovie> Actors{ get; set; } = new List<ActorMovie>();
+		public virtual List<ActorMovie> Actors{ get; set; }
 
 		public double ImdbRating { get; set; }
 
 		public string PosterURL { get; set; }
 
         public virtual List<Comment> Comments { get; set; }
-	}
+
+        public virtual List<Favorite> Favorites { get; set; }
+    }
 
     public class Genre
     {

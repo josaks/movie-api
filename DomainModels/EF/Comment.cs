@@ -1,4 +1,6 @@
-﻿namespace DomainModels.EF
+﻿using System;
+
+namespace DomainModels.EF
 {
     public class Comment
     {
@@ -9,5 +11,7 @@
         public string Author { get; set; }
 
         public virtual Movie Movie { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

@@ -17,19 +17,6 @@ namespace MovieApi
         public static void Main(string[] args)
         {
 			var host = CreateWebHostBuilder(args).Build();
-
-			using (var scope = host.Services.CreateScope()) {
-				var services = scope.ServiceProvider;
-				var context = services.GetRequiredService<MovieContext>();
-				try {
-					//SeedData.Initialize(services);
-				}
-				catch(Exception e) {
-					var logger = services.GetRequiredService<ILogger<Program>>();
-					logger.LogError(e, "An error occurred seeding the DB.");
-				}
-			}
-
             host.Run();
         }
 

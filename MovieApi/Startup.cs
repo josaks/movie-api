@@ -17,6 +17,11 @@ using DomainModels.EF;
 using MongoDB.Driver;
 using Persistence;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace MovieApi
 {
@@ -38,12 +43,27 @@ namespace MovieApi
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // Add authentication (Azure AD) 
+            services
+             .AddAuthentication(sharedOptions =>
+             {
+                 sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+             })
+             .AddJwtBearer(options =>
+             {
+                 options.Audience = Configuration["AzureAd:ClientId"];
+                 options.Authority = $"{Configuration["AzureAd:Instance"]}{Configuration["AzureAd:TenantId"]}";
+                 options.TokenValidationParameters = new TokenValidationParameters { RoleClaimType = ClaimTypes.Role };
+             });
+
             services.AddResponseCaching();
+            services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMemoryCache();
 
             //Services
             services.AddScoped<IMovieService, MovieService>();
+            services.AddScoped<IUserService, UserService>();
 
             //Cache
             services.AddScoped<ICache, MovieCache>();
@@ -51,6 +71,7 @@ namespace MovieApi
             //Repositories
             services.AddScoped<IMovieRepository, MovieRepositoryEF>();
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddEntityFrameworkSqlServer();
 
@@ -90,7 +111,10 @@ namespace MovieApi
             {
                 app.UseHsts();
             }
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseResponseCaching();
+            app.UseHttpsRedirection();
             app.Use(async (context, next) =>
             {
                 context.Response.GetTypedHeaders().CacheControl =
@@ -104,8 +128,7 @@ namespace MovieApi
 
                 await next();
             });
-
-            app.UseHttpsRedirection();
+            
             app.UseMvc();
         }
 	}

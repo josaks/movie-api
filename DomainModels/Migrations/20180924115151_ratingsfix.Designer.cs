@@ -4,14 +4,16 @@ using DomainModels.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DomainModels.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    partial class MovieContextModelSnapshot : ModelSnapshot
+    [Migration("20180924115151_ratingsfix")]
+    partial class ratingsfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,8 +55,6 @@ namespace DomainModels.Migrations
 
                     b.Property<string>("Author");
 
-                    b.Property<DateTime>("Date");
-
                     b.Property<int?>("MovieId");
 
                     b.Property<string>("Text");
@@ -64,19 +64,6 @@ namespace DomainModels.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("DomainModels.EF.Favorite", b =>
-                {
-                    b.Property<string>("Username");
-
-                    b.Property<int>("MovieId");
-
-                    b.HasKey("Username", "MovieId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("DomainModels.EF.Genre", b =>
@@ -135,8 +122,6 @@ namespace DomainModels.Migrations
 
                     b.Property<string>("Username");
 
-                    b.Property<DateTime>("Date");
-
                     b.Property<int>("RatingValue");
 
                     b.HasKey("MovieId", "Username");
@@ -162,14 +147,6 @@ namespace DomainModels.Migrations
                     b.HasOne("DomainModels.EF.Movie", "Movie")
                         .WithMany("Comments")
                         .HasForeignKey("MovieId");
-                });
-
-            modelBuilder.Entity("DomainModels.EF.Favorite", b =>
-                {
-                    b.HasOne("DomainModels.EF.Movie", "Movie")
-                        .WithMany("Favorites")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DomainModels.EF.Genre", b =>

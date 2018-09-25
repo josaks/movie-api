@@ -65,8 +65,21 @@ namespace Repositories
             return viewMovie;
         }
 
-        public View.Movie AddComment(View.Comment comment)
+        public void AddComment(View.Comment comment)
         {
+            throw new NotImplementedException();
+        }
+
+        public void Rate(View.Rating rating)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsFavorite(string username, View.Movie movie) {
+            throw new NotImplementedException();
+        }
+
+        public void SetFavorite(bool isFavorite, int movieId, string username) {
             throw new NotImplementedException();
         }
     }

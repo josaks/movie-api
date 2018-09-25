@@ -4,13 +4,11 @@ using System.Text;
 
 namespace ViewModel
 {
-    public class Comment
+    public class Rating
     {
-        public int Id { get; set; }
+        public string Username { get; set; }
 
-        public string Text { get; set; }
-
-        public string Author { get; set; }
+        public int Value { get; set; }
 
         public int MovieId { get; set; }
 

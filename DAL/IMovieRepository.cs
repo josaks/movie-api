@@ -9,6 +9,9 @@ namespace Repositories
     {
 		List<Movie> GetAllMovies();
 		Movie GetMovie(int id);
-        Movie AddComment(Comment comment);
-	}
+        void AddComment(Comment comment);
+        void Rate(Rating rating);
+        bool IsFavorite(string username, ViewModel.Movie movie);
+        void SetFavorite(bool isFavorite, int movieId, string username);
+    }
 }

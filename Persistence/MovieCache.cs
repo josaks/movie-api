@@ -27,11 +27,21 @@ namespace Persistence
             return CheckCacheThenDB($"_Movie{id}", () => repo.GetMovie(id));
         }
 
-        public Movie AddComment(Comment comment)
+        public void AddComment(Comment comment)
         {
-            return repo.AddComment(comment);
+            repo.AddComment(comment);
         }
 
+        public void Rate(Rating rating)
+        {
+            repo.Rate(rating);
+        }
+
+        public bool IsFavorite(string username, ViewModel.Movie movie) {
+            return repo.IsFavorite(username, movie);
+        }
+
+        //Helper method
         //Check if database record exists in cache, if so return it.
         //If not, make a call to the database to retrieve it and store it in cache
         public T CheckCacheThenDB<T>(string cacheKey, Func<T> dbCall)
@@ -43,6 +53,10 @@ namespace Persistence
             cacheEntry = dbCall();
             cache.Set(cacheKey, cacheEntry, TimeSpan.FromSeconds(10));
             return cacheEntry;
+        }
+
+        public void SetFavorite(bool isFavorite, int movieId, string username) {
+            repo.SetFavorite(isFavorite, movieId, username);
         }
     }
 }
