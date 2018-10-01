@@ -12,8 +12,7 @@ namespace ViewModel
         [Required]
         [MaxLength(200)]
         public string Text { get; set; }
-
-        [Required]
+        
         public string Author { get; set; }
 
         [Required]

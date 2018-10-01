@@ -26,5 +26,9 @@ namespace Persistence
 
         // Set a movie as a favorite for a user
         void SetFavorite(bool isFavorite, int movieId, string username);
+
+        // Given a movieId and username, get the users rating of this movie.
+        // If not rated, return null
+        int? GetRating(int movieId, string username);
     }
 }

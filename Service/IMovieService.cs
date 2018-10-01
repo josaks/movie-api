@@ -20,5 +20,9 @@ namespace Service
 
         // Set a movie as a favorite for a user
         void SetFavorite(bool isFavorite, int movieId);
+
+        // Given a movieId, get the logged in users rating of this movie.
+        // If not rated, return null
+        Rating GetRating(int movieId);
     }
 }

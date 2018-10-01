@@ -59,5 +59,17 @@ namespace Service
             var username = userService.GetUserName();
             cache.SetFavorite(isFavorite, movieId, username);
         }
+
+        public Rating GetRating(int movieId) {
+            //Get the authenticated user's name
+            var username = userService.GetUserName();
+
+            var rating = new Rating();
+            var ratingValue = cache.GetRating(movieId, username);
+            if (ratingValue.HasValue) rating.Value = ratingValue.Value;
+            else rating.Value = 1;
+            
+            return rating;
+        }
     }
 }

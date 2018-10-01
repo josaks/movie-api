@@ -82,5 +82,9 @@ namespace Repositories
         public void SetFavorite(bool isFavorite, int movieId, string username) {
             throw new NotImplementedException();
         }
+
+        public int? GetRating(int movieId, string username) {
+            throw new NotImplementedException();
+        }
     }
 }

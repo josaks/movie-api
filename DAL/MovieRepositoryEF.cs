@@ -118,6 +118,18 @@ namespace Repositories {
             DB.SaveChanges();
         }
 
+        public int? GetRating(int movieId, string username) {
+            var movie = DB.Movies
+                .Include(m => m.Ratings)
+                .FirstOrDefault(m => m.Id == movieId);
+
+            var rating = movie.Ratings
+                .FirstOrDefault(r => r.Username == username);
+
+            if (rating != null) return rating.RatingValue;
+            else return null;
+        }
+
         // Converts from EF domain model to view model
         private View.Movie ConvertMovie(Domain.Movie movie) {
             Console.WriteLine(movie);

@@ -50,5 +50,9 @@ namespace Persistence {
         public void SetFavorite(bool isFavorite, int movieId, string username) {
             repo.SetFavorite(isFavorite, movieId, username);
         }
+
+        public int? GetRating(int movieId, string username) {
+            return repo.GetRating(movieId, username);
+        }
     }
 }

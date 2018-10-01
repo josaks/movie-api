@@ -7,7 +7,6 @@ namespace ViewModel
 {
     public class Rating
     {
-        [Required]
         public string Username { get; set; }
 
         [Required]
@@ -15,8 +14,7 @@ namespace ViewModel
 
         [Required]
         public int MovieId { get; set; }
-
-        [Required]
+        
         public DateTime Date { get; set; }
     }
 }
