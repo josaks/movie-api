@@ -7,6 +7,9 @@ using Domain = DomainModels.EF;
 using View = ViewModel;
 
 namespace Repositories {
+
+    // Repository for retrieving data from a data store with Entity Framework.
+    // This repository uses eager loading (Include()) in its calls to the db.
     public class MovieRepositoryEF : IMovieRepository {
 
         private readonly MovieContext DB;
@@ -16,22 +19,26 @@ namespace Repositories {
         }
 
         public List<View.Movie> GetAllMovies() {
-            var mov = DB.Movies
+            // Find all movies
+            var movies = DB.Movies
                 .Include(m => m.Actors).ThenInclude(a => a.Actor)
                 .Include(m => m.Genres)
                 .Include(m => m.Ratings)
                 .Include(m => m.Comments)
                 .Select(m => ConvertMovie(m)).ToList();
-
-            return mov;
+           
+            return movies;
         }
 
         public bool IsFavorite(string username, View.Movie movie) {
-            var mov = DB.Movies
+            // Find movie
+            var movies = DB.Movies
                 .Include(m => m.Favorites)
                 .FirstOrDefault(m => m.Id == movie.Id);
-            if (mov != null) {
-                foreach (Favorite f in mov.Favorites) {
+
+            // Check if movie exists, if so check if user has favorited it
+            if (movies != null) {
+                foreach (var f in movies.Favorites) {
                     if (f.Username == username) return true;
                 }
             }
@@ -39,6 +46,7 @@ namespace Repositories {
         }
 
         public void SetFavorite(bool isFavorite, int movieId, string username) {
+            // Find movie
             var movie = DB.Movies
                 .Include(m => m.Favorites)
                 .FirstOrDefault(m => m.Id == movieId);
@@ -46,30 +54,36 @@ namespace Repositories {
             if (movie == null) return;
 
             if(isFavorite) {
+                // Add favorite
                 movie.Favorites.Add(new Favorite { MovieId = movieId, Username = username });
             }
             else {
+                // Remove favorite
                 var favorite = movie.Favorites.FirstOrDefault(f => f.Username == username);
                 if(favorite != null) movie.Favorites.Remove(favorite);
             }
         }
 
         public View.Movie GetMovie(int id) {
+            // Find movie
             var movie = DB.Movies
                 .Include(m => m.Actors).ThenInclude(a => a.Actor)
                 .Include(m => m.Genres)
                 .Include(m => m.Ratings)
                 .Include(m => m.Comments)
-                .Where(m => m.Id == id).FirstOrDefault();
+                .FirstOrDefault(m => m.Id == id);
+
             if (movie != null) return ConvertMovie(movie);
             return null;
         }
 
         public void AddComment(View.Comment comment) {
+            // Find movie
             var movie = DB.Movies
                 .Include(m => m.Comments)
                 .FirstOrDefault(m => m.Id == comment.MovieId);
 
+            // If the movie exists add the comment
             if (movie != null) {
                 movie.Comments.Add(new Comment() {
                     Text = comment.Text,
@@ -80,10 +94,12 @@ namespace Repositories {
         }
 
         public void Rate(View.Rating rating) {
+            // Find movie
             var movie = DB.Movies
                 .Include(m => m.Ratings)
                 .FirstOrDefault(m => m.Id == rating.MovieId);
 
+            // If the movie exists add the rating
             if (movie != null) {
                 var rat = movie.Ratings.FirstOrDefault(r => r.Username == rating.Username);
                 if(rat == null) {
@@ -102,7 +118,7 @@ namespace Repositories {
             DB.SaveChanges();
         }
 
-        // From domain model to view model
+        // Converts from EF domain model to view model
         private View.Movie ConvertMovie(Domain.Movie movie) {
             Console.WriteLine(movie);
 
@@ -111,12 +127,11 @@ namespace Repositories {
             viewModelMovie.Title = movie.Title;
             viewModelMovie.Year = movie.Year;
             viewModelMovie.Genres = movie.Genres.Select(g => g.GenreValue.ToString());
-            viewModelMovie.Ratings = movie.Ratings.Select(r => r.RatingValue);
+            viewModelMovie.AmountOfRatings = movie.Ratings.Where(r => r.MovieId == movie.Id).Count();
             viewModelMovie.Poster = movie.Poster;
             viewModelMovie.ContentRating = movie.ContentRating;
             viewModelMovie.Duration = movie.Duration;
             viewModelMovie.ReleaseDate = movie.ReleaseDate;
-            viewModelMovie.AverageRating = movie.AverageRating;
             viewModelMovie.OriginalTitle = movie.OriginalTitle;
             viewModelMovie.Storyline = movie.Storyline;
             viewModelMovie.Actors = movie.Actors.Select(a => a.Actor.Name);
@@ -128,6 +143,9 @@ namespace Repositories {
                 Id = c.Id,
                 MovieId = c.Movie.Id,
             });
+
+            //Can not call Average() on empty collection
+            viewModelMovie.AverageRating = movie.Ratings.Count == 0 ? 0 : movie.Ratings.Average(r => r.RatingValue);
 
             return viewModelMovie;
         }

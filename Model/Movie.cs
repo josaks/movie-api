@@ -13,7 +13,7 @@ namespace ViewModel
 
 		public IEnumerable<string> Genres { get; set; }
 
-		public IEnumerable<int> Ratings { get; set; }
+		public int AmountOfRatings { get; set; }
 
 		public string Poster { get; set; }
 
@@ -23,7 +23,7 @@ namespace ViewModel
 
 		public DateTime ReleaseDate { get; set; }
 
-		public int AverageRating { get; set; }
+		public double AverageRating { get; set; }
 
 		public string OriginalTitle { get; set; }
 

@@ -10,44 +10,49 @@ namespace Service
 	public class MovieService : IMovieService {
 		private readonly ICache cache;
         private readonly IUserService userService;
+        private readonly IDateService dateService;
 
-		public MovieService(ICache cache, IUserService userService) {
+		public MovieService(ICache cache, IUserService userService, IDateService dateService) {
             this.cache = cache;
             this.userService = userService;
+            this.dateService = dateService;
 		}
 
 		public List<Movie> GetAllMovies() {
             var movies = cache.GetAllMovies();
-            for(int i = 0; i < movies.Count; i++) {
-                movies[i].IsFavorite = cache.IsFavorite(userService.GetUserName(), movies[i]);
+
+            // Set favorites for authenticated user
+            var username = userService.GetUserName();
+            if(username != null) {
+                for (int i = 0; i < movies.Count; i++) {
+                    movies[i].IsFavorite = cache.IsFavorite(username, movies[i]);
+                }
             }
+            
+
 			return movies;
 		}
-
+        
 		public Movie GetMovie(int id) {
 			return cache.GetMovie(id);
 		}
 
-        public void AddComment(Comment comment)
+        public Comment AddComment(Comment comment)
         {
             //Add the authenticated user's name
             comment.Author = userService.GetUserName();
 
-            //Add the current date
-            comment.Date = DateTime.Now;
-
             cache.AddComment(comment);
+            return comment;
         }
 
-        public void Rate(Rating rating)
+        public Rating Rate(Rating rating)
         {
             //Add the authenticated user's name
             rating.Username = userService.GetUserName();
 
-            //Add the current date
-            rating.Date = DateTime.Now;
-
             cache.Rate(rating);
+            return rating;
         }
 
         public void SetFavorite(bool isFavorite, int movieId) {

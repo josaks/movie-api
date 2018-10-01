@@ -49,7 +49,7 @@ namespace Repositories
                 Title = domainMovie.Title,
                 Year = domainMovie.Year,
                 Genres = domainMovie.Genres,
-                Ratings = domainMovie.Ratings,
+                AmountOfRatings = domainMovie.Ratings.Count,
                 Poster = domainMovie.Poster,
                 ContentRating = domainMovie.ContentRating,
                 Duration = domainMovie.Duration,

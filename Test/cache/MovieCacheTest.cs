@@ -31,11 +31,11 @@ namespace Test
         public void GetAllMovie_ReturnsAListOfMovies()
         {
             //Arrange
-            mockRepo.Setup(repo => repo.GetAllMovies()).Returns(Helpers.GetTestMovies());
+            mockRepo.Setup(repo => repo.GetAllMovies()).Returns(Helpers.GetTestViewMovies());
             mockCache = Helpers.GetMemoryCache(new List<Movie>());
             movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
 
-            var expected = Helpers.GetTestMovies();
+            var expected = Helpers.GetTestViewMovies();
 
             //Act
             var result = movieCache.GetAllMovies();
@@ -51,7 +51,7 @@ namespace Test
             var id = 10;
             var title = "Test movie";
 
-            mockRepo.Setup(repo => repo.GetMovie(id)).Returns(Helpers.GetTestMovie(id, title));
+            mockRepo.Setup(repo => repo.GetMovie(id)).Returns(Helpers.GetTestViewMovie(id, title));
             mockCache = Helpers.GetMemoryCache(new Movie());
             movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
 
@@ -59,8 +59,8 @@ namespace Test
             var result = movieCache.GetMovie(id);
 
             //Assert
-            Assert.AreEqual(result.Title, title);
-            Assert.AreEqual(result.Id, id);
+            Assert.AreEqual(title, result.Title);
+            Assert.AreEqual(id, result.Id);
         }
     }
 }

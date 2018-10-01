@@ -6,10 +6,19 @@ namespace Service
 {
     public interface IMovieService
     {
+        // Get all movies
 		List<Movie> GetAllMovies();
+
+        // Given an id, get a specific movie
 		Movie GetMovie(int id);
-        void AddComment(Comment comment);
-        void Rate(Rating rating);
+
+        // Add a comment
+        Comment AddComment(Comment comment);
+
+        // Add a rating
+        Rating Rate(Rating rating);
+
+        // Set a movie as a favorite for a user
         void SetFavorite(bool isFavorite, int movieId);
     }
 }

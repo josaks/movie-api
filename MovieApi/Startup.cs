@@ -64,6 +64,7 @@ namespace MovieApi
             //Services
             services.AddScoped<IMovieService, MovieService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDateService, DateService>();
 
             //Cache
             services.AddScoped<ICache, MovieCache>();
@@ -106,15 +107,18 @@ namespace MovieApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+            app.UseStatusCodePages();
+            app.UseHttpsRedirection();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseResponseCaching();
-            app.UseHttpsRedirection();
             app.Use(async (context, next) =>
             {
                 context.Response.GetTypedHeaders().CacheControl =
