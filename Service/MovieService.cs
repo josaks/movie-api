@@ -42,6 +42,9 @@ namespace Service
             //Add the authenticated user's name
             comment.Author = userService.GetUserName();
 
+            //Add current date
+            comment.Date = dateService.Now();
+
             cache.AddComment(comment);
             return comment;
         }
@@ -50,6 +53,9 @@ namespace Service
         {
             //Add the authenticated user's name
             rating.Username = userService.GetUserName();
+
+            //Add current date
+            rating.Date = dateService.Now();
 
             cache.Rate(rating);
             return rating;

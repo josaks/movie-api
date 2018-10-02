@@ -1,30 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MovieApi.Controllers;
 using Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using ViewModel;
+using Xunit;
 
 namespace Test
 {
-    [TestClass]
     public class MovieControllerTest
     {
 		private MovieController controller;
 		private Mock<IMovieService> mockMovieService;
         private Mock<IUserService> mockUserService;
-
-		[TestInitialize]
-		public void BeforeEach() {
+        
+		public MovieControllerTest() {
 			//Initialize a mock service that can be passed to the controller constructor
 			mockMovieService = new Mock<IMovieService>();
             mockUserService = new Mock<IUserService>();
 		}
 
-		[TestMethod]
+		[Fact]
         public void Movies_ReturnsAListOfMovies()
         {
 			//Arrange
@@ -34,14 +33,15 @@ namespace Test
             var expected = Helpers.GetTestViewMovies();
 
             //Act
-            var result = controller.Movies();
+            var result = (OkObjectResult)controller.Movies();
+            var movies = (List<Movie>)result.Value;
 
-			//Assert
-			var model = result.Value;
-            model.SequenceEqual(expected);
+            //Assert
+            Assert.Equal(200, result.StatusCode);
+            movies.SequenceEqual(expected);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void GivenAnId_Movie_ReturnsAMovieWithCorrectId() {
 			//Arrange
 			var id = 1;
@@ -50,56 +50,97 @@ namespace Test
 			controller = new MovieController(mockMovieService.Object, mockUserService.Object);
 
 			//Act
-			var result = controller.Movie(id);
+            var result = (OkObjectResult)controller.Movie(id); ;
+            var movie = (Movie)result.Value;
 
 			//Assert
-			var model = result.Value;
-			Assert.AreEqual(model.Title, title);
-			Assert.AreEqual(model.Id, id);
-		}
+			Assert.Equal(200, result.StatusCode);
+			Assert.Equal(movie.Id, id);
+            Assert.Equal(movie.Title, title);
+        }
 
-        [TestMethod]
+        [Fact]
         public void GivenInvalidId_Movie_Returns404NotFound() {
             // Arrange
-            var id = 999;
-            mockMovieService.Setup(service => service.GetMovie(id)).Returns((Movie)null);
+            mockMovieService.Setup(service => 
+                service.GetMovie(It.IsAny<int>()))
+                .Returns((Movie)null);
             controller = new MovieController(mockMovieService.Object, mockUserService.Object);
 
             // Act
-            var result = controller.Movie(id);
+            var result = (NotFoundResult)controller.Movie(1000);
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
-            
+            Assert.Equal(404, result.StatusCode);
         }
 
-        [TestMethod]
-        public void GivenAComment_AddComment_PassesCommentObjectToService() {
+        [Fact]
+        public void GivenAValidComment_AddComment_Returns201Created() {
             //Arrange
             var comment = new Comment();
+            mockMovieService.Setup(service =>
+                service.AddComment(It.IsAny<Comment>())).Returns(comment);
             controller = new MovieController(mockMovieService.Object, mockUserService.Object);
 
             //Act
-            controller.AddComment(comment);
+            var result = (CreatedResult)controller.AddComment(comment);
+            var resultComment = (Comment)result.Value;
 
             //Assert
-            mockMovieService.Verify(service => service.AddComment(comment));
+            Assert.Equal(201, result.StatusCode);
+            Assert.Equal(comment, resultComment);
         }
 
-        [TestMethod]
-        public void GivenARating_AddRating_PassesRatingObjectToService() {
+        [Fact]
+        public void GivenAnInvalidComment_AddComment_Returns400BadRequest() {
+            //Arrange
+            var comment = new Comment();
+            mockMovieService.Setup(service =>
+                service.AddComment(It.IsAny<Comment>())).Returns(comment);
+            controller = new MovieController(mockMovieService.Object, mockUserService.Object);
+            controller.ModelState.AddModelError("", "");
+
+            //Act
+            var result = (BadRequestResult)controller.AddComment(comment);
+
+            //Assert
+            Assert.Equal(400, result.StatusCode);
+        }
+
+        [Fact]
+        public void GivenAValidRating_AddRating_Returns201Created() {
             //Arrange
             var rating = new Rating();
+            mockMovieService.Setup(service =>
+                service.Rate(It.IsAny<Rating>())).Returns(rating);
             controller = new MovieController(mockMovieService.Object, mockUserService.Object);
 
             //Act
-            controller.Rate(rating);
+            var result = (CreatedResult)controller.Rate(rating);
+            var resultRating = (Rating)result.Value;
 
             //Assert
-            mockMovieService.Verify(service => service.Rate(rating));
+            Assert.Equal(201, result.StatusCode);
+            Assert.Equal(rating, resultRating);
         }
 
-        [TestMethod]
+        [Fact]
+        public void GivenAnInvalidRating_AddRating_Returns400BadRequest() {
+            //Arrange
+            var rating = new Rating();
+            mockMovieService.Setup(service =>
+                service.Rate(It.IsAny<Rating>())).Returns(rating);
+            controller = new MovieController(mockMovieService.Object, mockUserService.Object);
+            controller.ModelState.AddModelError("", "");
+
+            //Act
+            var result = (BadRequestResult)controller.Rate(rating);
+
+            //Assert
+            Assert.Equal(400, result.StatusCode);
+        }
+
+        [Fact]
         public void GivenUserIsAuthenticated_Name_ReturnsContentResultWithName() {
             //Arrange
             var expectedUsername = "user";
@@ -110,10 +151,10 @@ namespace Test
             var result = controller.Name();
 
             //Assert
-            Assert.AreEqual(expectedUsername, result.Content);
+            Assert.Equal(expectedUsername, result.Content);
         }
 
-        [TestMethod]
+        [Fact]
         public void GivenAMovie_SetFavorite_CallsServiceToSetFavorite() {
             //Arrange
             var movie = new Movie { IsFavorite = true, Id = 1 };

@@ -25,16 +25,16 @@ namespace MovieApi.Controllers {
         // Returns every movie
         [HttpGet]
         [Route("Movies")]
-        public ActionResult<List<Movie>> Movies() => MovieService.GetAllMovies();
+        public IActionResult Movies() => Ok(MovieService.GetAllMovies());
 
         // GET api/movie/1
         // Given an id, returns a movie.
         // If a movie with the given id does not exist, return a 404 Not found response.
         [HttpGet]
         [Route("Movie/{id}")]
-        public ActionResult<Movie> Movie(int id) {
+        public IActionResult Movie(int id) {
             var movie = MovieService.GetMovie(id);
-            if (movie != null) return movie;
+            if (movie != null) return Ok(movie);
             else return NotFound();
         }
 
