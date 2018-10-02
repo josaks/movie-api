@@ -82,11 +82,14 @@ namespace MovieApi.Controllers {
             MovieService.SetFavorite(movie.IsFavorite, movie.Id);
         }
 
+
+        // GET api/getrating
+        // Get the rating for the given movieId for an authenticated user
         [HttpGet]
         [Authorize(Roles = "User, Admin")]
         [Route("GetRating/{id}")]
-        public ActionResult<Rating> GetRating(int id) {
-            return MovieService.GetRating(id);
+        public IActionResult GetRating(int id) {
+            return Ok(MovieService.GetRating(id));
         }
     }
 }

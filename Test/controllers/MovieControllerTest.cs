@@ -166,5 +166,23 @@ namespace Test
             //Assert
             mockMovieService.Verify(service => service.SetFavorite(true, 1));
         }
+
+        [Fact]
+        public void GivenAMovieId_GetRating_ReturnsARating() {
+            //Arrange
+            var rating = new Rating {
+                MovieId = 1,
+            };
+            mockMovieService.Setup(service => service.GetRating(It.IsAny<int>())).Returns(rating);
+            controller = new MovieController(mockMovieService.Object, mockUserService.Object);
+
+            //Act
+            var result = (OkObjectResult)controller.GetRating(1);
+            var resultRating = (Rating)result.Value;
+
+            //Controllers
+            Assert.Equal(200, result.StatusCode);
+            Assert.Equal(rating, resultRating);
+        }
     }
 }

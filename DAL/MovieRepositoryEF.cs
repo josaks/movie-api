@@ -88,6 +88,7 @@ namespace Repositories {
                 movie.Comments.Add(new Comment() {
                     Text = comment.Text,
                     Author = comment.Author,
+                    Date = comment.Date,
                 });
             }
             DB.SaveChanges();
@@ -154,6 +155,7 @@ namespace Repositories {
                 Author = c.Author,
                 Id = c.Id,
                 MovieId = c.Movie.Id,
+                Date = c.Date,
             });
 
             //Can not call Average() on empty collection
