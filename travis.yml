@@ -2,10 +2,3 @@ language: csharp
 solution: MovieApi.sln
 mono: none
 dotnet: 2.1.403
-install:
- - nuget restore solution-name.sln
- - nuget install xunit.runners -Version 2.4.0 -OutputDirectory testrunner
-script:
- - dotnet restore
- - xbuild /p:Configuration=Release MovieApi.sln
- - dotnet ./testrunner/xunit.runners.2.4.0/tools/xunit.console.clr4.exe ./Test/bin/Release/Test.dll
