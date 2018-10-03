@@ -19,11 +19,11 @@ namespace Test
         private Mock<IMovieRepository> mockRepo;
         private Mock<IMemoryCache> mockCache;
         
-        public MovieCacheTest()
-        {
-            //Initialize a mock service that can be passed to the controller constructor
-            mockRepo = new Mock<IMovieRepository>();
-        }
+        //public MovieCacheTest()
+        //{
+        //    //Initialize a mock service that can be passed to the controller constructor
+        //    mockRepo = new Mock<IMovieRepository>();
+        //}
         
         //[Fact]
         //public void GetAllMovie_ReturnsAListOfMovies()
