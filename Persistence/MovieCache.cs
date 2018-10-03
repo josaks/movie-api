@@ -37,22 +37,26 @@ namespace Persistence {
         //Helper method
         //Check if database record exists in cache, if so return it.
         //If not, make a call to a repository to retrieve it, store it in cache and return it.
-        private T CheckCacheThenRepo<T>(string cacheKey, Func<T> repoCall) {
-            T cacheEntry = cache.Get<T>(cacheKey);
+        public T CheckCacheThenRepo<T>(string cacheKey, Func<T> repoCall) {
+            var foundInCache = cache.TryGetValue(cacheKey, out T cacheEntry);
 
-            if (cacheEntry != null) return cacheEntry;
+            if (foundInCache) return cacheEntry;
 
             cacheEntry = repoCall();
             cache.Set(cacheKey, cacheEntry, TimeSpan.FromSeconds(10));
             return cacheEntry;
         }
 
-        public void SetFavorite(bool isFavorite, int movieId, string username) {
-            repo.SetFavorite(isFavorite, movieId, username);
-        }
-
         public int? GetRating(int movieId, string username) {
             return repo.GetRating(movieId, username);
+        }
+
+        public void AddFavorite(int movieId, string username) {
+            repo.AddFavorite(movieId, username);
+        }
+
+        public void RemoveFavorite(int movieId, string username) {
+            repo.RemoveFavorite(movieId, username);
         }
     }
 }

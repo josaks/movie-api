@@ -24,8 +24,11 @@ namespace Persistence
         // Check if a movie is a favorite for a user
         bool IsFavorite(string username, Movie movie);
 
-        // Set a movie as a favorite for a user
-        void SetFavorite(bool isFavorite, int movieId, string username);
+        // Add a movie as a favorite for a user
+        void AddFavorite(int movieId, string username);
+
+        // Remove a movie as a favorite for a user
+        void RemoveFavorite(int movieId, string username);
 
         // Given a movieId and username, get the users rating of this movie.
         // If not rated, return null

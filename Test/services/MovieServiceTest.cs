@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Moq;
 using MovieApi.Controllers;
 using Persistence;
@@ -12,15 +12,13 @@ using ViewModel;
 
 
 namespace Test {
-	[TestClass]
 	public class MovieServiceTest {
 		private IMovieService movieService;
 		private Mock<ICache> mockCache;
         private Mock<IUserService> mockUserService;
         private Mock<IDateService> mockDateService;
-
-		[TestInitialize]
-		public void BeforeEach() {
+        
+		public MovieServiceTest() {
 			//Initialize a mock repository that can be passed to the service constructor
 			mockCache = new Mock<ICache>();
 
@@ -31,7 +29,7 @@ namespace Test {
             mockDateService = new Mock<IDateService>();
         }
 
-		[TestMethod]
+		[Fact]
 		public void GetAllMovies_ReturnsAListOfMovies() {
             //Arrange
 			mockCache.Setup(cache => cache.GetAllMovies()).Returns(Helpers.GetTestViewMovies());
@@ -44,12 +42,12 @@ namespace Test {
             var result = movieService.GetAllMovies();
 
             //Assert
-            Assert.AreEqual(result.Count, expected.Count);
+            Assert.Equal(result.Count, expected.Count);
             result.SequenceEqual(expected);
 		}
 
-		[TestMethod]
-		public void GivenAnId_GetMovie_ReturnsAMovieWithCorrectId() {
+		[Fact]
+		public void GivenAnId_GetMovie_ReturnsCorrectMovie() {
 			//Arrange
 			int id = 1;
             string title = "Test movie";
@@ -61,11 +59,11 @@ namespace Test {
 			var result = movieService.GetMovie(id);
 
 			//Assert
-			Assert.AreEqual(result.Title, title);
-			Assert.AreEqual(result.Id, id);
+			Assert.Equal(title, result.Title);
+			Assert.Equal(id, result.Id);
 		}
 
-        [TestMethod]
+        [Fact]
         public void AddComment_CallsCacheAddCommentWithCorrectArguments_Once()
         {
             //Arrange
@@ -99,8 +97,8 @@ namespace Test {
 
 
         // https://stackoverflow.com/questions/4956974/verifying-a-specific-parameter-with-moq
-        [TestMethod]
-        public void AddRating_CallsCacheAddRatingWithCorrectArguments_Once()
+        [Fact]
+        public void Rate_CallsCacheAddRatingWithCorrectArguments_Once()
         {
             //Arrange
             var movieId = 1;
@@ -131,10 +129,11 @@ namespace Test {
                 ))), Times.Once);
         }
 
-        [TestMethod]
-        public void SetFavorite_CallsCacheSetFavoriteWithCorrectArguments() {
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void SetFavorite_CallsCacheSetFavoriteWithCorrectArguments(bool isFavorite) {
             //Arrange
-            var isFavorite = true;
             var movieId = 1;
             mockUserService.Setup(s => s.GetUserName()).Returns("user");
             movieService = new MovieService(mockCache.Object,
@@ -144,7 +143,29 @@ namespace Test {
             movieService.SetFavorite(isFavorite, movieId);
 
             //Assert
-            mockCache.Verify(cache => cache.SetFavorite(isFavorite, movieId, "user"), Times.Once);
+            if(isFavorite) mockCache.Verify(cache => cache.AddFavorite(movieId, "user"), Times.Once);
+            else mockCache.Verify(cache => cache.RemoveFavorite(movieId, "user"), Times.Once);
+
+        }
+
+        [Theory]
+        [InlineData(null, 1)]
+        [InlineData(10, 10)]
+        public void GetRating_ReturnsACorrectRatingObject(int? ratingValue, int expectedValue) {
+            //Arrange
+            int movieId = 1;
+            mockUserService.Setup(s => s.GetUserName()).Returns("user");
+            mockCache.Setup(cache => cache
+                .GetRating(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(ratingValue);
+            movieService = new MovieService(mockCache.Object,
+                mockUserService.Object, mockDateService.Object);
+
+            //Act
+            var rating = movieService.GetRating(movieId);
+
+            //Assert
+            Assert.Equal(expectedValue, rating.Value);
         }
     }
 }

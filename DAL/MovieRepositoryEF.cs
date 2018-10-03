@@ -45,23 +45,29 @@ namespace Repositories {
             return false;
         }
 
-        public void SetFavorite(bool isFavorite, int movieId, string username) {
+        public void AddFavorite(int movieId, string username) {
             // Find movie
             var movie = DB.Movies
                 .Include(m => m.Favorites)
                 .FirstOrDefault(m => m.Id == movieId);
-
             if (movie == null) return;
 
-            if(isFavorite) {
-                // Add favorite
-                movie.Favorites.Add(new Favorite { MovieId = movieId, Username = username });
-            }
-            else {
-                // Remove favorite
-                var favorite = movie.Favorites.FirstOrDefault(f => f.Username == username);
-                if(favorite != null) movie.Favorites.Remove(favorite);
-            }
+            // Add favorite
+            movie.Favorites.Add(new Favorite { MovieId = movieId, Username = username });
+            DB.SaveChanges();
+        }
+
+        public void RemoveFavorite(int movieId, string username) {
+            // Find movie
+            var movie = DB.Movies
+                .Include(m => m.Favorites)
+                .FirstOrDefault(m => m.Id == movieId);
+            if (movie == null) return;
+
+            // Remove favorite
+            var favorite = movie.Favorites.FirstOrDefault(f => f.Username == username);
+            if (favorite != null) movie.Favorites.Remove(favorite);
+            DB.SaveChanges();
         }
 
         public View.Movie GetMovie(int id) {
@@ -123,6 +129,8 @@ namespace Repositories {
             var movie = DB.Movies
                 .Include(m => m.Ratings)
                 .FirstOrDefault(m => m.Id == movieId);
+
+            if (movie == null) return null;
 
             var rating = movie.Ratings
                 .FirstOrDefault(r => r.Username == username);

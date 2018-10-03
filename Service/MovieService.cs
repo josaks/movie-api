@@ -29,7 +29,6 @@ namespace Service
                 }
             }
             
-
 			return movies;
 		}
         
@@ -63,7 +62,9 @@ namespace Service
 
         public void SetFavorite(bool isFavorite, int movieId) {
             var username = userService.GetUserName();
-            cache.SetFavorite(isFavorite, movieId, username);
+
+            if (isFavorite) cache.AddFavorite(movieId, username);
+            else cache.RemoveFavorite(movieId, username);
         }
 
         public Rating GetRating(int movieId) {
@@ -72,8 +73,7 @@ namespace Service
 
             var rating = new Rating();
             var ratingValue = cache.GetRating(movieId, username);
-            if (ratingValue.HasValue) rating.Value = ratingValue.Value;
-            else rating.Value = 1;
+            rating.Value = (ratingValue.HasValue) ? ratingValue.Value : 1 ;
             
             return rating;
         }

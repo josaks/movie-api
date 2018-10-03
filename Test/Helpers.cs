@@ -50,11 +50,11 @@ namespace Test {
             return movies;
         }
 
-        public static Mock<IMemoryCache> GetMemoryCache(object expectedValue) {
+        public static Mock<IMemoryCache> GetMemoryCache(object expectedValue, bool tryGetReturnValue) {
             var mockMemoryCache = new Mock<IMemoryCache>();
             mockMemoryCache
                 .Setup(x => x.TryGetValue(It.IsAny<object>(), out expectedValue))
-                .Returns(true);
+                .Returns(tryGetReturnValue);
             return mockMemoryCache;
         }
     }
