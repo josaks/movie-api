@@ -50,7 +50,17 @@ namespace DomainModels.EF {
         {
             Action = 1,
             Adventure,
-            Scifi
+            Scifi,
+            Animation,
+            Comedy,
+            Crime,
+            Drama,
+            Romance,
+            Thriller,
+            Fantasy,
+            History,
+            Biography,
+            Musical,
         }
     }
 }

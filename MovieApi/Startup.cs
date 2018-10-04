@@ -48,6 +48,7 @@ namespace MovieApi
              .AddAuthentication(sharedOptions =>
              {
                  sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                 sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
              })
              .AddJwtBearer(options =>
              {
@@ -132,8 +133,8 @@ namespace MovieApi
 
                 await next();
             });
-            
+
             app.UseMvc();
         }
-	}
+    }
 }

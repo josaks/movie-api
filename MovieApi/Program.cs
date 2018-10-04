@@ -22,6 +22,9 @@ namespace MovieApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                // uncomment to debug production
+                //.CaptureStartupErrors(true)
+                //.UseSetting(WebHostDefaults.DetailedErrorsKey, "true")
                 .UseStartup<Startup>();
     }
 }
