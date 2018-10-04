@@ -30,6 +30,8 @@ namespace MovieApi.Controllers {
         // GET api/movie/1
         // Given an id, returns a movie.
         // If a movie with the given id does not exist, return a 404 Not found response.
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpGet]
         [Route("Movie/{id}")]
         public IActionResult Movie(int id) {
@@ -41,6 +43,9 @@ namespace MovieApi.Controllers {
         // POST api/addcomment
         // Saves a comment made by a user.
         // If the given comment fails validation, return a 400 Bad request response.
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
         [Route("AddComment")]
@@ -55,6 +60,9 @@ namespace MovieApi.Controllers {
         // POST api/rate
         // Saves a rating made by a user
         // If the given rating fails validation, return a 400 Bad request response.
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         [HttpPost]
         [Authorize(Roles = "User, Admin")]
         [Route("Rate")]
@@ -68,6 +76,8 @@ namespace MovieApi.Controllers {
 
         // GET api/name
         // Returns an authenticated user's name
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         [HttpGet]
         [Route("Name")]
         [Authorize(Roles = "User, Admin")]
@@ -75,6 +85,8 @@ namespace MovieApi.Controllers {
 
         // POST api/setfavorite
         // Sets a movie as a favorite for a user
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         [HttpPost]
         [Route("SetFavorite")]
         [Authorize(Roles = "User, Admin")]
@@ -82,7 +94,8 @@ namespace MovieApi.Controllers {
             MovieService.SetFavorite(movie.IsFavorite, movie.Id);
         }
 
-
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
         // GET api/getrating
         // Get the rating for the given movieId for an authenticated user
         [HttpGet]
