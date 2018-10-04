@@ -13,54 +13,52 @@ using System.Linq;
 
 namespace Test
 {
-    public class MovieCacheTest
-    {
-        private MovieCache movieCache;
-        private Mock<IMovieRepository> mockRepo;
-        private Mock<IMemoryCache> mockCache;
-        
-        //public MovieCacheTest()
-        //{
-        //    //Initialize a mock service that can be passed to the controller constructor
-        //    mockRepo = new Mock<IMovieRepository>();
-        //}
-        
-        //[Fact]
-        //public void GetAllMovie_ReturnsAListOfMovies()
-        //{
-        //    //Arrange
-        //    mockRepo.Setup(repo => repo.GetAllMovies()).Returns(Helpers.GetTestViewMovies());
-        //    mockCache = Helpers.GetMemoryCache(new List<Movie>(), false);
-        //    movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
+    //public class MovieCacheTest
+    //{
+    //    private MovieCache movieCache;
+    //    private Mock<IMovieRepository> mockRepo;
+    //    private Mock<IMemoryCache> mockCache;
 
-        //    var expected = Helpers.GetTestViewMovies();
+    //    public MovieCacheTest() {
+    //        //Initialize a mock service that can be passed to the controller constructor
+    //        mockRepo = new Mock<IMovieRepository>();
+    //    }
 
-        //    //Act
-        //    var result = movieCache.GetAllMovies();
+    //    [Fact]
+    //    public void GetAllMovie_ReturnsAListOfMovies() {
+    //        //Arrange
+    //        mockRepo.Setup(repo => repo.GetAllMovies()).Returns(Helpers.GetTestViewMovies());
+    //        mockCache = Helpers.GetMemoryCache(new List<Movie>(), false);
+    //        movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
 
-        //    //Assert
-        //    result.SequenceEqual(expected);
-        //}
+    //        var expected = Helpers.GetTestViewMovies();
 
-        //[Theory]
-        //[InlineData(false, 10, "Test movie")]
-        //public void GivenAnId_Movie_ReturnsAMovieWithCorrectId(
-        //    bool tryGetReturnValue, int expectedId, string expectedTitle) {
+    //        //Act
+    //        var result = movieCache.GetAllMovies();
 
-        //    //Arrange
-        //    var movie = Helpers.GetTestViewMovie(expectedId, expectedTitle);
+    //        //Assert
+    //        result.SequenceEqual(expected);
+    //    }
 
-        //    mockRepo.Setup(repo => repo.GetMovie(It.IsAny<int>())).Returns(movie);
-        //    mockCache = Helpers.GetMemoryCache(new Movie(), false);
-        //    movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
+    //    [Theory]
+    //    [InlineData(false, 10, "Test movie")]
+    //    public void GivenAnId_Movie_ReturnsAMovieWithCorrectId(
+    //        bool tryGetReturnValue, int expectedId, string expectedTitle) {
 
-        //    //Act
-        //    var result = movieCache.GetMovie(expectedId);
+    //        //Arrange
+    //        var movie = Helpers.GetTestViewMovie(expectedId, expectedTitle);
 
-        //    //Assert
-        //    Assert.Equal(expectedTitle, result.Title);
-        //    Assert.Equal(expectedId, result.Id);
-        //}
-        
-    }
+    //        mockRepo.Setup(repo => repo.GetMovie(It.IsAny<int>())).Returns(movie);
+    //        mockCache = Helpers.GetMemoryCache(new Movie(), false);
+    //        movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
+
+    //        //Act
+    //        var result = movieCache.GetMovie(expectedId);
+
+    //        //Assert
+    //        Assert.Equal(expectedTitle, result.Title);
+    //        Assert.Equal(expectedId, result.Id);
+    //    }
+
+    //}
 }

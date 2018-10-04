@@ -3,8 +3,8 @@ solution: MovieApi.sln
 mono: none
 dotnet: 2.1.403
 install:
-  - nuget restore MovieApi.sln
-  - nuget install xunit.runners -Version 2.4 -OutputDirectory testrunner
+  - dotnet restore MovieApi.sln
+  - dotnet install xunit.runners -Version 2.4 -OutputDirectory testrunner
 script:
  - dotnet restore
  - xbuild /p:Configuration=Release MovieApi.sln

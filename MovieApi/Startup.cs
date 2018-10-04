@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MovieApi
 {
@@ -99,6 +100,20 @@ namespace MovieApi
                 MongoClientSettings.FromConnectionString(mongoDBConnectionString))
                 .GetDatabase("MoviesDB"));
 
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new Info { Title = "Movie API", Version = "v1" });
+                c.DescribeAllEnumsAsStrings();
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme {
+                    In = "header",
+                    Description = "Please enter JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = "apiKey",
+                });
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                    { "Bearer", Enumerable.Empty<string>() },
+                });
+            });
+
 			services.BuildServiceProvider().GetService<MovieContext>().Database.Migrate();
         }
 
@@ -132,6 +147,12 @@ namespace MovieApi
                     new string[] { "Accept-Encoding" };
 
                 await next();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseMvc();
