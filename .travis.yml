@@ -1,0 +1,4 @@
+language: csharp
+solution: MovieApi.sln
+mono: none
+dotnet: 2.1
