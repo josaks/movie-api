@@ -4,9 +4,6 @@ mono: none
 dotnet: 2.1.403
 install:
   - dotnet restore MovieApi.sln
-  - dotnet install xunit.runners -Version 2.4 -OutputDirectory testrunner
 script:
- - dotnet restore
- - xbuild /p:Configuration=Release MovieApi.sln
- - mono ./testrunner/xunit.runners.2.4/tools/xunit.console.clr4.exe ./Test/bin/Release/Test.dll
- - mono ./testrunner/xunit.runners.2.4/tools/xunit.console.clr4.exe ./IntegrationTest/bin/Release/IntegrationTest.dll
+ - dotnet build
+ - dotnet test Test/Test.csproj
