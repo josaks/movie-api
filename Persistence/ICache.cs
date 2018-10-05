@@ -14,5 +14,10 @@ namespace Persistence
         // Given an id, get a specific movie from a cache.
         // If there is no entry in the cache for this, make a call to a repository instead and return the result.
         Movie GetMovie(int id);
+
+
+        //Save to cache
+        void PutMovieInCache(Movie movie);
+        void PutMoviesInCache(List<Movie> movies);
     }
 }

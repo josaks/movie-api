@@ -27,9 +27,10 @@ namespace Service
 		public List<Movie> GetAllMovies() {
             //Check cache first
             var movies = cache.GetAllMovies();
-            //If nothing found, get from repo
+            //If nothing found, get from repo and save to cache
             if(movies == null) {
                 movies = movieRepo.GetAllMovies();
+                cache.PutMoviesInCache(movies);
             }
 
             // Set favorites for authenticated user
@@ -46,9 +47,10 @@ namespace Service
 		public Movie GetMovie(int id) {
             //Check cache first
             var movie = cache.GetMovie(id);
-            //If nothing found, get from repo
-            if(movie == null) {
+            //If nothing found, get from repo and save to cache
+            if (movie == null) {
                 movie = movieRepo.GetMovie(id);
+                cache.PutMovieInCache(movie);
             }
             
             //Set favorite for authenticated user

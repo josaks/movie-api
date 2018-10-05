@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Xunit;
 using Moq;
 using MovieApi.Controllers;
@@ -10,55 +9,51 @@ using System;
 using System.Collections.Generic;
 using ViewModel;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace Test
 {
-    //public class MovieCacheTest
-    //{
-    //    private MovieCache movieCache;
-    //    private Mock<IMovieRepository> mockRepo;
-    //    private Mock<IMemoryCache> mockCache;
+    public class MovieCacheTest {
+        //private MovieCache movieCache;
+        //private IMemoryCache memoryCache;
+        
+        
+        //[Fact]
+        //public void WhenCacheHasMoviesEntry_GetAllMovie_ReturnsAListOfMovies() {
+        //    //Arrange
+        //    movieCache = new MovieCache(memoryCache);
 
-    //    public MovieCacheTest() {
-    //        //Initialize a mock service that can be passed to the controller constructor
-    //        mockRepo = new Mock<IMovieRepository>();
-    //    }
+        //    var expected = Helpers.GetTestViewMovies();
 
-    //    [Fact]
-    //    public void GetAllMovie_ReturnsAListOfMovies() {
-    //        //Arrange
-    //        mockRepo.Setup(repo => repo.GetAllMovies()).Returns(Helpers.GetTestViewMovies());
-    //        mockCache = Helpers.GetMemoryCache(new List<Movie>(), false);
-    //        movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
+        //    //Act
+        //    var result = movieCache.GetAllMovies();
 
-    //        var expected = Helpers.GetTestViewMovies();
+        //    //Assert
+        //    result.SequenceEqual(expected);
+        //}
 
-    //        //Act
-    //        var result = movieCache.GetAllMovies();
 
-    //        //Assert
-    //        result.SequenceEqual(expected);
-    //    }
 
-    //    [Theory]
-    //    [InlineData(false, 10, "Test movie")]
-    //    public void GivenAnId_Movie_ReturnsAMovieWithCorrectId(
-    //        bool tryGetReturnValue, int expectedId, string expectedTitle) {
+        //[Theory]
+        //[InlineData(false, 10, "Test movie")]
+        //public void GivenAnId_Movie_ReturnsAMovieWithCorrectId(
+        //    bool tryGetReturnValue, int expectedId, string expectedTitle) {
 
-    //        //Arrange
-    //        var movie = Helpers.GetTestViewMovie(expectedId, expectedTitle);
+        //    //Arrange
+        //    var movie = Helpers.GetTestViewMovie(expectedId, expectedTitle);
 
-    //        mockRepo.Setup(repo => repo.GetMovie(It.IsAny<int>())).Returns(movie);
-    //        mockCache = Helpers.GetMemoryCache(new Movie(), false);
-    //        movieCache = new MovieCache(mockCache.Object, mockRepo.Object);
+        //    mockRepo.Setup(repo => repo.GetMovie(It.IsAny<int>())).Returns(movie);
+        //    mockCache = Helpers.GetMemoryCache(new Movie(), false);
+        //    movieCache = new MovieCache(mockCache.Object);
 
-    //        //Act
-    //        var result = movieCache.GetMovie(expectedId);
+        //    //Act
+        //    var result = movieCache.GetMovie(expectedId);
 
-    //        //Assert
-    //        Assert.Equal(expectedTitle, result.Title);
-    //        Assert.Equal(expectedId, result.Id);
-    //    }
+        //    //Assert
+        //    Assert.Equal(expectedTitle, result.Title);
+        //    Assert.Equal(expectedId, result.Id);
+        //}
 
-    //}
+    }
 }
