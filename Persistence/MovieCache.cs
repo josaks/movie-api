@@ -7,56 +7,29 @@ using ViewModel;
 namespace Persistence {
     public class MovieCache : ICache {
         private readonly IMemoryCache cache;
-        private readonly IMovieRepository repo;
 
-        public MovieCache(IMemoryCache cache, IMovieRepository repo) {
+        public MovieCache(IMemoryCache cache) {
             this.cache = cache;
-            this.repo = repo;
         }
 
+        //Get all movies from cache
         public List<Movie> GetAllMovies() {
-            return CheckCacheThenRepo("_Movies", () => repo.GetAllMovies());
+            return CheckCache<List<Movie>>("_Movies");
         }
 
+        //Get a movie given an id from cache
         public Movie GetMovie(int id) {
-            return CheckCacheThenRepo($"_Movie{id}", () => repo.GetMovie(id));
-        }
-
-        public void AddComment(Comment comment) {
-            repo.AddComment(comment);
-        }
-
-        public void Rate(Rating rating) {
-            repo.Rate(rating);
-        }
-
-        public bool IsFavorite(string username, ViewModel.Movie movie) {
-            return repo.IsFavorite(username, movie);
+            return CheckCache<Movie>($"_Movie{id}");
         }
 
         //Helper method
-        //Check if database record exists in cache, if so return it.
-        //If not, make a call to a repository to retrieve it, store it in cache and return it.
-        public T CheckCacheThenRepo<T>(string cacheKey, Func<T> repoCall) {
+        //Check if value exists in cache, if so return it.
+        //If not, return default value
+        public T CheckCache<T>(string cacheKey) {
             var foundInCache = cache.TryGetValue(cacheKey, out T cacheEntry);
 
             if (foundInCache) return cacheEntry;
-
-            cacheEntry = repoCall();
-            cache.Set(cacheKey, cacheEntry, TimeSpan.FromSeconds(10));
-            return cacheEntry;
-        }
-
-        public int? GetRating(int movieId, string username) {
-            return repo.GetRating(movieId, username);
-        }
-
-        public void AddFavorite(int movieId, string username) {
-            repo.AddFavorite(movieId, username);
-        }
-
-        public void RemoveFavorite(int movieId, string username) {
-            repo.RemoveFavorite(movieId, username);
+            return default(T);
         }
     }
 }

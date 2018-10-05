@@ -14,24 +14,5 @@ namespace Persistence
         // Given an id, get a specific movie from a cache.
         // If there is no entry in the cache for this, make a call to a repository instead and return the result.
         Movie GetMovie(int id);
-
-        // Add a comment
-        void AddComment(Comment comment);
-
-        // Add a rating
-        void Rate(Rating rating);
-
-        // Check if a movie is a favorite for a user
-        bool IsFavorite(string username, Movie movie);
-
-        // Add a movie as a favorite for a user
-        void AddFavorite(int movieId, string username);
-
-        // Remove a movie as a favorite for a user
-        void RemoveFavorite(int movieId, string username);
-
-        // Given a movieId and username, get the users rating of this movie.
-        // If not rated, return null
-        int? GetRating(int movieId, string username);
     }
 }

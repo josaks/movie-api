@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Persistence;
+using Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,21 +12,31 @@ namespace Service
 		private readonly ICache cache;
         private readonly IUserService userService;
         private readonly IDateService dateService;
+        private readonly IMovieRepository movieRepo;
 
-		public MovieService(ICache cache, IUserService userService, IDateService dateService) {
+		public MovieService(
+            ICache cache, IUserService userService, IDateService dateService,
+            IMovieRepository movieRepo) {
+
             this.cache = cache;
             this.userService = userService;
             this.dateService = dateService;
+            this.movieRepo = movieRepo;
 		}
 
 		public List<Movie> GetAllMovies() {
+            //Check cache first
             var movies = cache.GetAllMovies();
+            //If nothing found, get from repo
+            if(movies == null) {
+                movies = movieRepo.GetAllMovies();
+            }
 
             // Set favorites for authenticated user
             var username = userService.GetUserName();
             if(username != null) {
                 for (int i = 0; i < movies.Count; i++) {
-                    movies[i].IsFavorite = cache.IsFavorite(username, movies[i]);
+                    movies[i].IsFavorite = movieRepo.IsFavorite(username, movies[i]);
                 }
             }
             
@@ -33,7 +44,20 @@ namespace Service
 		}
         
 		public Movie GetMovie(int id) {
-			return cache.GetMovie(id);
+            //Check cache first
+            var movie = cache.GetMovie(id);
+            //If nothing found, get from repo
+            if(movie == null) {
+                movie = movieRepo.GetMovie(id);
+            }
+            
+            //Set favorite for authenticated user
+            var username = userService.GetUserName();
+            if(username != null) {
+                movie.IsFavorite = movieRepo.IsFavorite(username, movie);
+            }
+
+            return movie;
 		}
 
         public Comment AddComment(Comment comment)
@@ -44,7 +68,7 @@ namespace Service
             //Add current date
             comment.Date = dateService.Now();
 
-            cache.AddComment(comment);
+            movieRepo.AddComment(comment);
             return comment;
         }
 
@@ -56,15 +80,15 @@ namespace Service
             //Add current date
             rating.Date = dateService.Now();
 
-            cache.Rate(rating);
+            movieRepo.Rate(rating);
             return rating;
         }
 
         public void SetFavorite(bool isFavorite, int movieId) {
             var username = userService.GetUserName();
 
-            if (isFavorite) cache.AddFavorite(movieId, username);
-            else cache.RemoveFavorite(movieId, username);
+            if (isFavorite) movieRepo.AddFavorite(movieId, username);
+            else movieRepo.RemoveFavorite(movieId, username);
         }
 
         public Rating GetRating(int movieId) {
@@ -72,7 +96,7 @@ namespace Service
             var username = userService.GetUserName();
 
             var rating = new Rating();
-            var ratingValue = cache.GetRating(movieId, username);
+            var ratingValue = movieRepo.GetRating(movieId, username);
             rating.Value = (ratingValue.HasValue) ? ratingValue.Value : 1 ;
             
             return rating;
