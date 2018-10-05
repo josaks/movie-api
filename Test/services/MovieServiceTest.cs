@@ -67,7 +67,7 @@ namespace Test {
         [InlineData(null, true, false)]
         [InlineData("username", true, true)]
         [InlineData("username", false, false)]
-        public void GivenAnId_GetMovie_ReturnsCorrectMovie(string username, bool repoReturnsFavorite, bool favoriteExpected) {
+        public void GivenAnId_GetMovie_ReturnsCorrectMovie_WithCorrectFavoriteSet(string username, bool repoReturnsFavorite, bool favoriteExpected) {
 			//Arrange
 			int id = 1;
             string title = "Test movie";

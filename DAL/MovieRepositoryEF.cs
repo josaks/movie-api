@@ -141,8 +141,6 @@ namespace Repositories {
 
         // Converts from EF domain model to view model
         private View.Movie ConvertMovie(Domain.Movie movie) {
-            Console.WriteLine(movie);
-
             var viewModelMovie = new View.Movie();
             viewModelMovie.Id = movie.Id;
             viewModelMovie.Title = movie.Title;
